@@ -1,0 +1,126 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <title>PWA Notificação Push</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link rel="manifest" href="manifest.json">
+  <link rel="apple-touch-icon" href="icon-192.png">
+  <meta name="theme-color" content="#4f46e5">
+  <style>
+    body {
+      background: #f8fafc;
+      font-family: Arial, sans-serif;
+      margin: 0;
+      padding: 0;
+    }
+    .container {
+      background: #fff;
+      border-radius: 16px;
+      box-shadow: 0 2px 12px rgba(0,0,0,0.05);
+      max-width: 400px;
+      margin: 64px auto;
+      padding: 32px;
+    }
+    h1 {
+      text-align: center;
+      margin-bottom: 24px;
+    }
+    form label {
+      display: block;
+      margin-bottom: 16px;
+    }
+    input[type="text"] {
+      width: 100%;
+      padding: 8px;
+      border-radius: 6px;
+      border: 1px solid #ddd;
+      margin-top: 4px;
+    }
+    button {
+      width: 100%;
+      padding: 12px;
+      background: #4f46e5;
+      color: #fff;
+      border: none;
+      border-radius: 6px;
+      font-size: 1rem;
+      cursor: pointer;
+    }
+    button:hover {
+      background: #3730a3;
+    }
+    #status {
+      text-align: center;
+      margin-top: 24px;
+      color: #16a34a;
+      font-weight: bold;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <h1>PWA Notificação Push</h1>
+    <form id="notification-form">
+      <label>
+        Título:
+        <input type="text" id="titulo" required value="Título de Exemplo">
+      </label>
+      <label>
+        Mensagem:
+        <input type="text" id="mensagem" required value="Mensagem da notificação">
+      </label>
+      <button type="submit">Enviar Notificação</button>
+    </form>
+    <p id="status">Carregando...</p>
+    <div style="margin-top: 24px; text-align: center; color: #7b7b7b;">
+      <small>
+        Adicione esta página à tela inicial para ver o ícone personalizado na notificação push no iOS!
+      </small>
+    </div>
+  </div>
+  <script>
+    // Registra o Service Worker
+    if ('serviceWorker' in navigator && 'Notification' in window) {
+      navigator.serviceWorker.register('sw.js').then(function(reg) {
+        // Quando SW controlar a página, remove o status de "Carregando"
+        if (!navigator.serviceWorker.controller) {
+          navigator.serviceWorker.addEventListener('controllerchange', function() {
+            document.getElementById('status').textContent = '';
+          });
+        } else {
+          document.getElementById('status').textContent = '';
+        }
+      });
+    } else {
+      document.getElementById('status').textContent = "Navegador não suporta notificações.";
+    }
+
+    document.getElementById('notification-form').onsubmit = async function(e) {
+      e.preventDefault();
+      const titulo = document.getElementById('titulo').value;
+      const mensagem = document.getElementById('mensagem').value;
+
+      // Solicita permissão
+      if (Notification.permission !== "granted") {
+        await Notification.requestPermission();
+      }
+
+      if (Notification.permission === "granted") {
+        // Envia mensagem ao service worker
+        navigator.serviceWorker.ready.then(function(reg) {
+          if (reg.active) {
+            reg.active.postMessage({ titulo, mensagem });
+            document.getElementById('status').textContent = "Notificação enviada!";
+            setTimeout(() => { document.getElementById('status').textContent = ""; }, 3000);
+          } else {
+            document.getElementById('status').textContent = "Service Worker ainda não está ativo. Tente recarregar.";
+          }
+        });
+      } else {
+        document.getElementById('status').textContent = "Permita as notificações.";
+      }
+    };
+  </script>
+</body>
+</html>
