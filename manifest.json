@@ -7,12 +7,12 @@
   "theme_color": "#4f46e5",
   "icons": [
     {
-      "src": "IMG_0140.JPG",
+      "src": "solutpag.png",
       "type": "image/png",
       "sizes": "192x192"
     },
     {
-      "src": "IMG_0140.JPG",
+      "src": "solutpag.png",
       "type": "image/png",
       "sizes": "512x512"
     }
