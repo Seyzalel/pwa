@@ -1,6 +1,6 @@
 {
   "name": "PWA Notificação Push",
-  "short_name": "PWAPush",
+  "short_name": "SolutPag",
   "start_url": ".",
   "display": "standalone",
   "background_color": "#f8fafc",
