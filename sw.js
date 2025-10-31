@@ -2,8 +2,8 @@ self.addEventListener('message', function(event) {
   const { titulo, mensagem } = event.data;
   self.registration.showNotification(titulo, {
     body: mensagem,
-    icon: 'IMG_0140.JPG', // Personalize o nome se quiser
-    badge: 'IMG_0140.JPG' // Para Android também usar seu ícone
+    icon: 'solutpag.png', // Personalize o nome se quiser
+    badge: 'solutpag.png' // Para Android também usar seu ícone
   });
 });
 
